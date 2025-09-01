@@ -24,7 +24,7 @@ export default defineNuxtConfig({
     ]
   },
   app: {
-    baseURL: '/roboREST/'  // ← имя твоего репозитория
+    baseURL: '/roboREST/docs/'  // ← имя твоего репозитория
   },
 nitro: {
     preset: 'static', // указываем, что хотим статику
