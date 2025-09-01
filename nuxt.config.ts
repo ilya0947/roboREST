@@ -24,16 +24,13 @@ export default defineNuxtConfig({
     ]
   },
   app: {
-    baseURL: '/roboREST/docs/'  // ← имя твоего репозитория
+    baseURL: '/docs/'  // ← имя твоего репозитория
   },
 nitro: {
     preset: 'static', // указываем, что хотим статику
     output: {
       publicDir: 'docs' // ← собирать в папку docs
     }
-  },
-  routeRules: {
-    'element/**': { prerender: true }
   },
   compatibilityDate: '2025-07-16'
 })
