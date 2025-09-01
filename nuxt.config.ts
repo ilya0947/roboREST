@@ -23,9 +23,9 @@ export default defineNuxtConfig({
       tailwindcss()
     ]
   },
-  // app: {
-  //   baseURL: '/roboREST/docs/'  // ← имя твоего репозитория
-  // },
+  app: {
+    baseURL: '/roboREST/docs/'  // ← имя твоего репозитория
+  },
 nitro: {
     preset: 'static', // указываем, что хотим статику
     output: {
