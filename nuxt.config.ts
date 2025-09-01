@@ -23,6 +23,8 @@ export default defineNuxtConfig({
       tailwindcss()
     ]
   },
-
+nitro: {
+    preset: 'static' // указываем, что хотим статику
+  },
   compatibilityDate: '2025-07-16'
 })
