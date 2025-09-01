@@ -23,8 +23,17 @@ export default defineNuxtConfig({
       tailwindcss()
     ]
   },
+  app: {
+    baseURL: '/roboREST/'  // ← имя твоего репозитория
+  },
 nitro: {
-    preset: 'static' // указываем, что хотим статику
+    preset: 'static', // указываем, что хотим статику
+    output: {
+      publicDir: 'docs' // ← собирать в папку docs
+    }
+  },
+  routeRules: {
+    'element/**': { prerender: true }
   },
   compatibilityDate: '2025-07-16'
 })
