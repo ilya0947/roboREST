@@ -1,32 +1,37 @@
-<script setup lang="ts">
-import PlayCircleIcon from '@bitrix24/b24icons-vue/main/PlayCircleIcon'
+<script setup>
 
-useHead({
-  title: 'Bitrix24 UI - Starter'
-})
+    const title = 'Мои активити и роботы';
+    const store = useGlobalState();
+    
+    useHead({
+        title
+    });
+    onMounted(async () => {
+        store.setModeView('');
+    });
+
 </script>
 
 <template>
-  <div class="flex flex-col items-start sm:items-center justify-center gap-[10px] h-[calc(100vh-50px)]">
-    <ProseH1 class="sm:text-8xl font-light">
-      Bitrix24 UI - Starter
-    </ProseH1>
-
-    <div class="flex flex-wrap items-start sm:items-center gap-2">
-      <B24Button
-        label="Documentation"
-        color="air-primary-copilot"
-        :icon="PlayCircleIcon"
-        to="https://bitrix24.github.io/b24ui/guide/installation-nuxt-app.html"
-        target="_blank"
-      />
-
-      <B24Button
-        label="GitHub"
-        color="air-secondary-accent"
-        to="https://github.com/bitrix24/b24ui"
-        target="_blank"
-      />
+    <div>
+        <template v-if="store.modeView === 'preloader'">
+            <PreloaderMain/>
+        </template>
+        <template v-else>
+            <div class="container m-auto pt-10 pl-8 pr-8 pb-8">
+                <div class="flex justify-between mb-8">
+                    <h1 class="font-bold text-base-700 text-3xl">{{ title }}</h1>
+                    <B24Button
+                        class="rounded-xs"
+                        color="primary"
+                        :normal-case="false"
+                        label="+ Добавить активити/робота"
+                        to="/element/0/"
+                        @click="store.setModeView('preloader')"
+                    />
+                </div>
+                <ItemsList/>
+            </div>
+        </template>
     </div>
-  </div>
 </template>

@@ -1,13 +1,11 @@
 <script setup lang="ts">
-useHead({
-  bodyAttrs: {}
-})
+  useHead({
+    bodyAttrs: {}
+  })
 </script>
 
 <template>
   <B24App>
-    <PreloaderMain>
-      <NuxtPage />
-    </PreloaderMain>
+    <NuxtLayout/>
   </B24App>
 </template>
