@@ -1,34 +1,34 @@
 <script setup>
-    import Cross55Icon from '@bitrix24/b24icons-vue/actions/Cross55Icon'
+    import Cross55Icon from '@bitrix24/b24icons-vue/actions/Cross55Icon';
+    import { cloneDeep } from 'lodash-es';
 
-    const store = useGlobalState();
     const modalOpen = ref(false);
     const error = ref('');
     const newFieldCode = ref('');
     const props = defineProps({
-        id: {
-            type: Number,
-            required: true,
-        },
         params: {
             type: Object,
             required: false,
             default: () => ({})
         },
+        checkChange: {
+            type: Function,
+            required: true,
+        },
     });
-    const localParams = ref({ ...props.params });
+    const localParams = ref(cloneDeep(props.params));
+    const emit = defineEmits(['update:params']);
 
     onMounted(async () => {
     });
 
     const addNewField = () => {
-        console.log(newFieldCode.value)
         if (!newFieldCode.value || !newFieldCode.value.trim()) {
             error.value = 'Название не может быть пустым';
         } else if (localParams.value[newFieldCode.value]) {
             error.value = 'Такое поле уже существует';
         } else {
-            localParams.value[newFieldCode.value] = {code:newFieldCode.value,name: ''};
+            localParams.value[newFieldCode.value] = {code:newFieldCode.value,name: '',value:''};
             modalOpen.value = false
             newFieldCode.value = '';
             saveData();
@@ -36,7 +36,7 @@
     };
 
     const deleteField = (code) => {
-        const newParams = {...localParams.value};
+        const newParams = cloneDeep(localParams.value);
         delete newParams[code];
         localParams.value = newParams;
         saveData();
@@ -45,12 +45,14 @@
     const updateName = (code, newName) => {
         localParams.value[code].name = newName;
     };
+    const updateValue = (code, newValue) => {
+        localParams.value[code].value = newValue;
+    };
 
     const saveData = () => {
-        const curDataItem = store.getItemById(props.id);
-        curDataItem.inParams = localParams.value;
-        store.updateItem(props.id,curDataItem);
-    }
+        emit('update:params', localParams.value);
+        props.checkChange(localParams.value, 'inParams');
+    };
     
 </script>
 
@@ -58,23 +60,32 @@
 <template>
     <template v-if="localParams && typeof(localParams) === 'object' && Object.keys(localParams).length > 0">
         <ul class="p-2">
-            <li v-for="(value, key) in localParams" :key="key" class="bg-base-100 p-4 rounded-lg mt-4">
+            <li v-for="(data, key) in localParams" :key="key" class="bg-base-100 p-4 rounded-lg mt-4">
                 <div class="flex justify-between items-center gap-4">
                     <div class="flex gap-4 flex-wrap w-full">
-                        <div class="min-w-[35%]">
+                        <div class="min-w-[32%]">
                             <h3 class="font-medium text-base-500 text-sm mb-1">Код поля</h3>
                             <B24Input
-                                v-model="value.code"
+                                v-model="data.code"
                                 :disabled="true"
                                 :b24ui="{base:'disabled:text-base-500 disabled:pointer-events-auto bg-none disabled:opacity-100 disabled:cursor-auto disabled:bg-base-150'}"
                             />
                         </div>
-                        <div class="min-w-[35%]">
+                        <div class="min-w-[32%]">
                             <h3 class="font-medium text-base-500 text-sm mb-1">Название поля</h3>
                             <B24Input
-                                v-model="value.name"
+                                v-model="data.name"
                                 placeholder="Введите название"
                                 @update:model-value="updateName(key,$event)"
+                                @blur="saveData"
+                            />
+                        </div>
+                        <div class="min-w-[32%]">
+                            <h3 class="font-medium text-base-500 text-sm mb-1">Значение для тестирования</h3>
+                            <B24Input
+                                v-model="data.value"
+                                placeholder="Введите тестовое название"
+                                @update:model-value="updateValue(key,$event)"
                                 @blur="saveData"
                             />
                         </div>
@@ -84,7 +95,7 @@
                            class="rounded-xs"
                            :icon="Cross55Icon"
                            color="danger"
-                           @click="deleteField(value.code)"
+                           @click="deleteField(data.code)"
                         />
                     </div>
 

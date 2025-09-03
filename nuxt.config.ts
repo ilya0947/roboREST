@@ -8,7 +8,10 @@ export default defineNuxtConfig({
    * SecurityError: Failed to read a named property '__NUXT_DEVTOOLS_DISABLE__' from 'Window'
    */
   devtools: { enabled: false },
-
+  build: { transpile: [
+    'monaco-editor',
+    '@monaco-editor/loader'
+  ]},
   modules: [
     '@pinia/nuxt',
     '@bitrix24/b24ui-nuxt',
@@ -21,16 +24,22 @@ export default defineNuxtConfig({
   vite: {
     plugins: [
       tailwindcss()
-    ]
+    ],
+    define: {
+      'process.env.VSCODE_TEXTMATE_DEBUG': 'false'
+    },
+    optimizeDeps: {
+      include: ['monaco-editor']
+    }
   },
   app: {
-    baseURL: '/roboREST/', // ← имя твоего репозитория
+    baseURL: '/roboREST/',
     buildAssetsDir: 'nuxt'
   },
-nitro: {
-    preset: 'static', // указываем, что хотим статику
+  nitro: {
+    preset: 'static',
     output: {
-      publicDir: 'docs' // ← собирать в папку docs
+      publicDir: 'docs'
     }
   },
   compatibilityDate: '2025-07-16'

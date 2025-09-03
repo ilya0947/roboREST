@@ -1,22 +1,23 @@
 <script setup>
-    import Cross55Icon from '@bitrix24/b24icons-vue/actions/Cross55Icon'
+    import Cross55Icon from '@bitrix24/b24icons-vue/actions/Cross55Icon';
+    import { cloneDeep } from 'lodash-es';
 
-    const store = useGlobalState();
     const modalOpen = ref(false);
     const error = ref('');
     const newFieldCode = ref('');
     const props = defineProps({
-        id: {
-            type: Number,
-            required: true,
-        },
         params: {
             type: Object,
             required: false,
             default: () => ({})
         },
+        checkChange: {
+            type: Function,
+            required: true,
+        },
     });
-    const localParams = ref({ ...props.params });
+    const localParams = ref(cloneDeep(props.params));
+    const emit = defineEmits(['update:params']);
 
     onMounted(async () => {
     });
@@ -27,7 +28,7 @@
         } else if (localParams.value[newFieldCode.value]) {
             error.value = 'Такое поле уже существует';
         } else {
-            localParams.value[newFieldCode.value] = {code:newFieldCode.value,name: '',multiple:false,value:''};
+            localParams.value[newFieldCode.value] = {code:newFieldCode.value,name: '',multiple:false};
             modalOpen.value = false
             newFieldCode.value = '';
             saveData();
@@ -35,15 +36,12 @@
     };
 
     const deleteField = (code) => {
-        const newParams = {...localParams.value};
+        const newParams = cloneDeep(localParams.value);
         delete newParams[code];
         localParams.value = newParams;
         saveData();
     };
-    
-    const updateValue = (code, newValue) => {
-        localParams.value[code].value = newValue;
-    };
+
     const updateName = (code, newName) => {
         localParams.value[code].name = newName;
     };
@@ -53,10 +51,9 @@
     };
 
     const saveData = () => {
-        const curDataItem = store.getItemById(props.id);
-        curDataItem.outParams = localParams.value;
-        store.updateItem(props.id,curDataItem);
-    }
+        emit('update:params', localParams.value);
+        props.checkChange(localParams.value, 'outParams');
+    };
     
 </script>
 
@@ -102,16 +99,6 @@
                            @click="deleteField(data.code)"
                         />
                     </div>
-                </div>
-                <div class="mt-2">
-                    <h3 class="font-medium text-base-500 text-sm mb-1">Значение поля</h3>
-                    <B24Textarea
-                        v-model="data.value"
-                        :rows="2"
-                        placeholder="Введите значение поля"
-                        @update:model-value="updateValue(key,$event)"
-                        @blur="saveData"
-                    />
                 </div>
             </li>
         </ul>
