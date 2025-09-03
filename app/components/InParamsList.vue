@@ -2,9 +2,6 @@
     import Cross55Icon from '@bitrix24/b24icons-vue/actions/Cross55Icon';
     import { cloneDeep } from 'lodash-es';
 
-    const modalOpen = ref(false);
-    const error = ref('');
-    const newFieldCode = ref('');
     const props = defineProps({
         params: {
             type: Object,
@@ -23,16 +20,9 @@
     });
 
     const addNewField = () => {
-        if (!newFieldCode.value || !newFieldCode.value.trim()) {
-            error.value = 'Название не может быть пустым';
-        } else if (localParams.value[newFieldCode.value]) {
-            error.value = 'Такое поле уже существует';
-        } else {
-            localParams.value[newFieldCode.value] = {code:newFieldCode.value,name: '',value:''};
-            modalOpen.value = false
-            newFieldCode.value = '';
-            saveData();
-        }
+        const code = `field_input_${Object.keys(localParams.value).length+1}`;
+        localParams.value[code] = {code,name: '',value:''};
+        saveData();
     };
 
     const deleteField = (code) => {
@@ -109,53 +99,12 @@
         </ul>
     </template>
     <div class="mt-4">
-        <!-- <ModalTemplate
-            main-btn-text="+ Добавить поле"
-            title="Введите код поля"
-            desc="Указывается только при создании"
-            :calback="addNewField"
-            :inpur-data="{
-                showInput: true,
-                valContainer: newFieldCode,
-                errorText: 'Название не может быть пустым',
-                plh: 'Введите код поля',
-            }"
-        /> -->
-        <B24Modal
-            v-model:open="modalOpen"
-            title="Введите код поля"
-            description="Указывается только при создании"
-        >
-            <B24Button
-                class="rounded-xs"
-                color="primary"
-                :normal-case="false"
-                label="+ Добавить поле"
-            />
-            <template #body>
-                <B24Input
-                    v-model="newFieldCode"
-                    :autofocus="true"
-                    placeholder="Введите код поля"
-                    @update:model-value="newFieldCode = $event"
-                    @input="error = ''"
-                />
-                <div v-if="error" class="text-alert-text">{{ error }}</div>
-            </template>
-            <template #footer>
-                <div class="flex flex-row gap-[10px]">
-                    <B24Button
-                        color="air-primary-success"
-                        label="Сохранить"
-                        @click="addNewField"
-                    />
-                    <B24Button
-                        color="air-tertiary"
-                        label="Отмена"
-                        @click="modalOpen = false"
-                    />
-                </div>
-            </template>
-        </B24Modal>
+        <B24Button
+            class="rounded-xs"
+            color="primary"
+            :normal-case="false"
+            label="+ Добавить поле"
+            @click="addNewField"
+        />
     </div>
 </template>

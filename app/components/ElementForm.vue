@@ -61,11 +61,16 @@
     const saveData = () => {
         const id = props.id === 0 ? item.value.id : props.id;
         store.updateItem(id,item.value);
-        data.value = item.value;
+        data.value = cloneDeep(item.value);
         chancgeElement.value = {};
     };
 
     const checkChange = (newParams, key) => {
+        console.log(data.value[key],newParams);
+        for(const k in data.value[key]) {
+            
+            console.log(data.value[key][k],newParams[k]);
+        }
         if (isEqual(data.value[key], newParams)) {
             delete chancgeElement.value[key];
         } else {
@@ -192,11 +197,15 @@
                         />
                     </div>
                     <div class="mt-4">
-                        <div ref="container" class="p-[10px] border-2 border-base-350 border-solid bg-base-100 rounded-sm min-h-[100px]"/>
+                        <div ref="container" class="p-[20px] border-2 border-base-350 border-solid bg-base-100 rounded-sm min-h-[100px]">
+                            <DemoList/>
+                        </div>
                     </div>
                     <div class="mt-4">
                         <div class="font-medium text-base-500 text-sm mb-2">Логи</div>
-                        <div ref="containerLogs" class="p-[10px] border-2 border-base-350 border-solid bg-base-100 rounded-sm min-h-[100px]"/>
+                        <div ref="containerLogs" class="p-[10px] border-2 border-base-350 border-solid bg-base-100 rounded-sm min-h-[100px]">
+                            <DemoListLogs/>
+                        </div>
                     </div>
                 </div>
             </div>
