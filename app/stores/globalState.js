@@ -9,21 +9,27 @@ export const useGlobalState = defineStore('globalState', {
           type: '',
           title: 'Отправка уведомлений',
           inParams: {},
-          outParams: {}
+          outParams: {},
+          activityCode: 'console.log(1);',
+          activityCodeLang: 'javascript'
         },
         {
           id: 2,
           type: '',
           title: 'Обработка заявок',
           inParams: {},
-          outParams: {}
+          outParams: {},
+          activityCode: 'console.log(2);',
+          activityCodeLang: 'typescript'
         },
         {
           id: 3,
           type: '',
           title: 'Синхронизация данных',
           inParams: {},
-          outParams: {}
+          outParams: {},
+          activityCode: 'console.log(3);',
+          activityCodeLang: 'javascript'
         },
       ]
   }),
